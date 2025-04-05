@@ -32,15 +32,21 @@ public class BudgetDAO {
     }
 
     // Cập nhật ngân sách
-    public int updateBudget(Budget budget) {
+    public boolean updateBudget(Budget budget) {
         db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY, budget.getCategory());
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT, budget.getAmount());
-        int rowsAffected = db.update(ExpenseDatabaseHelper.TABLE_BUDGET, values,
-                ExpenseDatabaseHelper.COLUMN_BUDGET_ID + " = ?", new String[]{String.valueOf(budget.getId())});
+
+        int rowsAffected = db.update(
+                ExpenseDatabaseHelper.TABLE_BUDGET,
+                values,
+                ExpenseDatabaseHelper.COLUMN_BUDGET_ID + " = ?",
+                new String[]{String.valueOf(budget.getId())}
+        );
+
         db.close();
-        return rowsAffected;
+        return rowsAffected > 0; // Trả về true nếu có ít nhất một hàng được cập nhật
     }
 
     // Lấy tất cả ngân sách

@@ -3,13 +3,13 @@ package com.example.campusexpensemanagement.models;
 public class Expense {
 
     private int id;
+    private int userId;
     private String description;
     private float amount;
     private String category;
     private long date;
 
     public Expense(String description, float amount, String category, long date) {
-        this.id = id;
         this.description = description;
         this.amount = amount;
         this.category = category;
@@ -22,6 +22,14 @@ public class Expense {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getDescription() {

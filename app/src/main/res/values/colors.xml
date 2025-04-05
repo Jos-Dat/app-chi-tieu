@@ -2,4 +2,33 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- App Theme Colors -->
+    <color name="primary">#1E88E5</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#64B5F6</color>
+    <color name="accent">#FFC107</color>
+
+    <!-- Budget and Expense Colors -->
+    <color name="budget_green">#4CAF50</color>
+    <color name="expense_red">#F44336</color>
+    <color name="warning_orange">#FF9800</color>
+    <color name="light_gray">#E0E0E0</color>
+
+    <!-- Text and Icon Colors -->
+    <color name="grey_text">#757575</color>
+    <color name="grey_icon">#9E9E9E</color>
+
+    <!-- Category Colors -->
+    <color name="category_food">#E91E63</color>
+    <color name="category_transport">#9C27B0</color>
+    <color name="category_education">#3F51B5</color>
+    <color name="category_entertainment">#009688</color>
+    <color name="category_health">#8BC34A</color>
+    <color name="category_other">#795548</color>
+
+    <!-- For Progress Bars -->
+    <color name="green">#4CAF50</color>
+    <color name="orange">#FF9800</color>
+    <color name="red">#F44336</color>
 </resources>
