@@ -178,6 +178,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
 
             // Create and save expense
             Expense expense = new Expense(description, amount, category, selectedDate);
+            expense.setUserId(userId); // Thêm dòng này để thiết lập userId
             long expenseId = expenseDAO.addExpense(expense);
 
             if (expenseId != -1) {

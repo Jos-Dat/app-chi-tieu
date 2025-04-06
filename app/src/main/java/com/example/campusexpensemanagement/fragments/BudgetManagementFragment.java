@@ -1,6 +1,7 @@
 package com.example.campusexpensemanagement.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.campusexpensemanagement.R;
+import com.example.campusexpensemanagement.data.ExpenseDAO;
 import com.example.campusexpensemanagement.databinding.FragmentBudgetManagementBinding;
 import com.example.campusexpensemanagement.adapters.BudgetAdapter;
 import com.example.campusexpensemanagement.data.BudgetDAO;
 import com.example.campusexpensemanagement.data.CategoryDAO;
 import com.example.campusexpensemanagement.models.Budget;
+import com.example.campusexpensemanagement.models.Expense;
 import com.example.campusexpensemanagement.utils.SessionManager;
 
 import android.app.AlertDialog;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BudgetManagementFragment extends Fragment implements BudgetAdapter.OnBudgetActionListener {
 
@@ -85,17 +89,56 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
             binding.emptyState.setVisibility(View.GONE);
         }
     }
+    private void printAllExpensesInDatabase() {
+        ExpenseDAO expenseDAO = new ExpenseDAO(requireContext());
+        List<Expense> allExpenses = expenseDAO.getAllExpenses();
 
-    private void calculateCategoryExpenses() {
-        // This would typically be implemented to calculate actual expenses per category
-        // For simplicity, we're using mock data here
-        categoryExpenses.clear();
-
-        // Example calculation - replace with actual expenses from database
-        for (Budget budget : budgetList) {
-            categoryExpenses.put(budget.getCategory(), budget.getAmount() * 0.75f); // Example: 75% spent
+        Log.d("DatabaseDebug", "Total Expenses in Database: " + allExpenses.size());
+        for (Expense expense : allExpenses) {
+            Log.d("DatabaseDebug", "Expense: " +
+                    "ID=" + expense.getId() +
+                    ", UserID=" + expense.getUserId() +
+                    ", Category=" + expense.getCategory() +
+                    ", Amount=" + expense.getAmount());
         }
     }
+    private void calculateCategoryExpenses() {
+        categoryExpenses.clear();
+
+        int currentUserId = sessionManager.getUserId();
+        Log.d("BudgetDebug", "Current User ID: " + currentUserId);
+
+        ExpenseDAO expenseDAO = new ExpenseDAO(requireContext());
+        List<Expense> userExpenses = expenseDAO.getUserExpenses(currentUserId);
+
+        Log.d("BudgetDebug", "Total User Expenses: " + userExpenses.size());
+
+        for (Expense expense : userExpenses) {
+            // Chuẩn hóa tên category
+            String category = expense.getCategory().trim().toLowerCase();
+            float expenseAmount = expense.getAmount();
+
+            Log.d("BudgetDebug", "Expense: Category=" + category + ", Amount=" + expenseAmount);
+
+            // Tổng hợp chi tiêu theo category
+            if (categoryExpenses.containsKey(category)) {
+                categoryExpenses.put(category, categoryExpenses.get(category) + expenseAmount);
+            } else {
+                categoryExpenses.put(category, expenseAmount);
+            }
+        }
+
+        // Log kết quả cuối cùng
+        Log.d("BudgetDebug", "Final Category Expenses: " + categoryExpenses);
+    }
+
+
+    private List<Expense> getAllExpensesFromDatabase() {
+        // Lấy danh sách tất cả chi tiêu từ cơ sở dữ liệu (ví dụ từ ExpenseDAO)
+        ExpenseDAO expenseDAO = new ExpenseDAO(requireContext());
+        return expenseDAO.getAllExpenses(); // Phương thức này sẽ lấy tất cả chi tiêu
+    }
+
 
     private void showAddBudgetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -197,10 +240,9 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
     private void addDefaultCategories() {
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Thực phẩm"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Vận chuyển"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Nhà ở"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Học tập"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Giải trí"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Y tế"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Sức khoẻ"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Khác"));
     }
 

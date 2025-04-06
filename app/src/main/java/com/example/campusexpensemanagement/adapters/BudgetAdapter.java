@@ -1,5 +1,6 @@
 package com.example.campusexpensemanagement.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,15 +49,31 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
     @Override
     public void onBindViewHolder(@NonNull BudgetViewHolder holder, int position) {
         Budget budget = budgetList.get(position);
-        String category = budget.getCategory();
+        String category = budget.getCategory().trim().toLowerCase();
         float budgetAmount = budget.getAmount();
 
+        // Log để debug
+        Log.d("BudgetAdapterDebug", "Budget Category: " + category);
+        Log.d("BudgetAdapterDebug", "All Category Expenses: " + categoryExpenses);
+
         // Get the expense amount for this category (if any)
-        float expenseAmount = categoryExpenses.containsKey(category) ? categoryExpenses.get(category) : 0;
+        float expenseAmount = 0;
+        for (Map.Entry<String, Float> entry : categoryExpenses.entrySet()) {
+            if (entry.getKey().trim().toLowerCase().equals(category)) {
+                expenseAmount = entry.getValue();
+                break;
+            }
+        }
+
+        // Log expense amount
+        Log.d("BudgetAdapterDebug", "Expense Amount for " + category + ": " + expenseAmount);
 
         // Calculate the remaining budget and usage percentage
         float remainingBudget = budgetAmount - expenseAmount;
         int usagePercentage = budgetAmount > 0 ? (int) ((expenseAmount / budgetAmount) * 100) : 0;
+
+        // Đảm bảo không vượt quá 100%
+        usagePercentage = Math.min(usagePercentage, 100);
 
         // Format currency
         String formattedBudget = currencyFormatter.format(budgetAmount);
@@ -64,7 +81,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
         String formattedRemaining = currencyFormatter.format(remainingBudget);
 
         // Update the UI
-        holder.tvBudgetCategory.setText(category);
+        holder.tvBudgetCategory.setText(budget.getCategory());
         holder.tvBudgetAmount.setText(formattedBudget);
         holder.tvExpenseAmount.setText(formattedExpense);
         holder.tvRemainingBudget.setText(formattedRemaining);

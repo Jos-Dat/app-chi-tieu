@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.campusexpensemanagement.R;
+import com.example.campusexpensemanagement.fragments.BudgetManagementFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.example.campusexpensemanagement.fragments.ExpenseManagementFragment;
 import com.example.campusexpensemanagement.fragments.HomeFragment;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
                     selectedFragment = new HomeFragment();
+                } else if (itemId == R.id.nav_budget) {
+                    selectedFragment = new BudgetManagementFragment();
                 } else if (itemId == R.id.nav_expense_management) {
                     selectedFragment = new ExpenseManagementFragment();
                 } else if (itemId == R.id.nav_report) {
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.fragment_container, selectedFragment)
                             .commit();
                 }
+
 
                 return true;
             };
