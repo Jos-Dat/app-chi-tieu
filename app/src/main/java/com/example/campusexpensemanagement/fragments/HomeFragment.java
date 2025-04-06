@@ -6,13 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.campusexpensemanagement.R;
 import com.example.campusexpensemanagement.adapters.RecentExpenseAdapter;
 import com.example.campusexpensemanagement.data.BudgetDAO;
@@ -22,7 +21,6 @@ import com.example.campusexpensemanagement.models.Expense;
 import com.example.campusexpensemanagement.utils.SessionManager;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -80,10 +78,10 @@ public class HomeFragment extends Fragment {
         // Set up RecyclerView
         rvRecentExpenses.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Set up click listener for add expense button
+        // Sử dụng getParentFragmentManager() thay vì getActivity().getSupportFragmentManager()
         cardAddExpense.setOnClickListener(v -> {
             ExpenseManagementFragment expenseFragment = new ExpenseManagementFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
+            getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, expenseFragment)
                     .addToBackStack(null)
                     .commit();
@@ -146,13 +144,13 @@ public class HomeFragment extends Fragment {
         // Update progress bar
         budgetProgressBar.setProgress(usagePercentage);
 
-        // Change color if over budget
+        // Sử dụng ContextCompat.getColor() thay vì getResources().getColor()
         if (usagePercentage > 100) {
-            budgetProgressBar.setIndicatorColor(getResources().getColor(R.color.red));
+            budgetProgressBar.setIndicatorColor(ContextCompat.getColor(getContext(), R.color.red));
         } else if (usagePercentage > 80) {
-            budgetProgressBar.setIndicatorColor(getResources().getColor(R.color.orange));
+            budgetProgressBar.setIndicatorColor(ContextCompat.getColor(getContext(), R.color.orange));
         } else {
-            budgetProgressBar.setIndicatorColor(getResources().getColor(R.color.green));
+            budgetProgressBar.setIndicatorColor(ContextCompat.getColor(getContext(), R.color.green));
         }
 
         // Show recent expenses (last 5)

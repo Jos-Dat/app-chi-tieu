@@ -4,7 +4,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- App Theme Colors -->
-    <color name="primary">#1E88E5</color>
+    <color name="primary">#006A71</color>
+    <color name="primary_2">#F2EFE7</color>
     <color name="primary_dark">#1565C0</color>
     <color name="primary_light">#64B5F6</color>
     <color name="accent">#FFC107</color>

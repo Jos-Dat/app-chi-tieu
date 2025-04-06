@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Validate input
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter full information!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid username or password!", Toast.LENGTH_SHORT).show();
         }
     }
 }

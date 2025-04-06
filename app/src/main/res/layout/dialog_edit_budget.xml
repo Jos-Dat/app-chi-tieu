@@ -1,25 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F8FAFC">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="Chỉnh sửa ngân sách"
+        android:text="Edit Budget"
         android:textSize="20sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Danh mục"
-        android:textSize="16sp" />
+        android:text="Category"
+        android:textSize="16sp"
+        android:textColor="#9AA6B2" />
 
     <TextView
         android:id="@+id/tv_budget_category"
@@ -28,13 +31,19 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/bg_input_field"
         android:padding="12dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="#3D0301" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:hint="Số tiền ngân sách">
+        android:hint="Budget Amount"
+        app:boxBackgroundColor="#D9EAFD"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusTopStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_budget_amount"
@@ -51,12 +60,13 @@
 
         <Button
             android:id="@+id/btn_cancel"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Hủy" />
+            android:text="Cancel"
+            android:backgroundTint="#F8FAFC"
+            android:textColor="#3D0301" />
 
         <Button
             android:id="@+id/btn_save_budget"
@@ -64,6 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Lưu" />
+            android:text="Save"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/black" />
     </LinearLayout>
 </LinearLayout>

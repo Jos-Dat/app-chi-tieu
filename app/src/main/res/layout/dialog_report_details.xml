@@ -1,18 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F8FAFC">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="Chi tiết báo cáo"
+        android:text="Report Details"
         android:textSize="20sp"
+        android:textColor="#9AA6B2"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -24,17 +25,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loại báo cáo: "
-            android:textSize="16sp" />
+            android:text="Report Type: "
+            android:textSize="16sp"
+            android:textColor="#3D0301" />
 
         <TextView
             android:id="@+id/tv_report_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="#3D0301"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="Hàng tháng" />
+            tools:text="Monthly" />
     </LinearLayout>
 
     <TextView
@@ -43,13 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textSize="14sp"
-        tools:text="Từ 01/01/2022 đến 31/01/2022" />
+        android:textColor="#9AA6B2"
+        tools:text="From 01/01/2022 to 31/01/2022" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/light_gray" />
+        android:background="#D9EAFD" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,17 +64,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng ngân sách:"
-            android:textSize="16sp" />
+            android:text="Total Budget:"
+            android:textSize="16sp"
+            android:textColor="#3D0301" />
 
         <TextView
             android:id="@+id/tv_total_budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="#3D0301"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="2.000.000 đ" />
+            tools:text="$2,000.00" />
     </LinearLayout>
 
     <LinearLayout
@@ -84,17 +88,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng chi tiêu:"
-            android:textSize="16sp" />
+            android:text="Total Expense:"
+            android:textSize="16sp"
+            android:textColor="#3D0301" />
 
         <TextView
             android:id="@+id/tv_total_expense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/expense_red"
+            android:textColor="#D76C82"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="1.500.000 đ" />
+            tools:text="$1,500.00" />
     </LinearLayout>
 
     <View
@@ -102,7 +107,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/light_gray" />
+        android:background="#D9EAFD" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -114,23 +119,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Còn lại:"
+            android:text="Balance:"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#3D0301" />
 
         <TextView
             android:id="@+id/tv_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/budget_green"
+            android:textColor="#3DA47A"
             android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="500.000 đ" />
+            tools:text="$500.00" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đóng" />
+        android:text="Close"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/black" />
 </LinearLayout>

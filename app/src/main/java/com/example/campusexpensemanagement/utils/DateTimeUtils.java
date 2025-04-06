@@ -50,28 +50,28 @@ public class DateTimeUtils {
         long diffSeconds = timeDiff / 1000;
 
         if (diffSeconds < 60) {
-            return "Vừa xong";
+            return "Just finished";
         }
 
         // Convert to minutes
         long diffMinutes = diffSeconds / 60;
 
         if (diffMinutes < 60) {
-            return diffMinutes + " phút trước";
+            return diffMinutes + " minutes ago";
         }
 
         // Convert to hours
         long diffHours = diffMinutes / 60;
 
         if (diffHours < 24) {
-            return diffHours + " giờ trước";
+            return diffHours + " hours ago";
         }
 
         // Convert to days
         long diffDays = diffHours / 24;
 
         if (diffDays < 7) {
-            return diffDays + " ngày trước";
+            return diffDays + " days ago";
         }
 
         // If more than a week, just show the date

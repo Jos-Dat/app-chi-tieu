@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#F8FAFC"
         android:orientation="vertical"
         android:padding="12dp">
 
@@ -33,24 +34,24 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:text="Học tập" />
+                    tools:text="Education" />
 
                 <TextView
                     android:id="@+id/tv_budget_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/black"
+                    android:textColor="#4A5056"
                     android:textSize="14sp"
-                    tools:text="Ngân sách: 500.000 đ" />
+                    tools:text="Budget: $500.00" />
 
                 <TextView
                     android:id="@+id/tv_expense_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/expense_red"
+                    android:textColor="#4A5056"
                     android:textSize="14sp"
-                    tools:text="Đã chi: 300.000 đ" />
+                    tools:text="Spent: $300.00" />
             </LinearLayout>
 
             <LinearLayout
@@ -64,18 +65,18 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Chỉnh sửa"
+                    android:contentDescription="Edit"
                     android:src="@drawable/ic_edit"
-                    app:tint="@color/grey_icon" />
+                    app:tint="@color/black" />
 
                 <ImageButton
                     android:id="@+id/btn_delete_budget"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Xóa"
+                    android:contentDescription="Delete"
                     android:src="@drawable/ic_delete"
-                    app:tint="@color/grey_icon" />
+                    app:tint="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -90,16 +91,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:textColor="@color/budget_green"
+                android:textColor="#4A535B"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="Còn lại: 200.000 đ" />
+                tools:text="Remaining: $200.00" />
 
             <TextView
                 android:id="@+id/tv_budget_usage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="#4D5762"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="60%" />

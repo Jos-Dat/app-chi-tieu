@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "CampusExpenseManagement.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // ten bang va cac cot
     public static  final String TABLE_EXPENSE = "expenses";
@@ -28,6 +28,7 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_EXPENSE_AMOUNT = "amount";
     public static final String COLUMN_EXPENSE_CATEGORY = "category";
     public static final String COLUMN_EXPENSE_DATE = "date";
+    public static final String COLUMN_EXPENSE_IS_RECURRING = "is_recurring";
 
     // cac cot cua bang category
     public static final String COLUMN_CATEGORY_ID = "id";
@@ -88,6 +89,7 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_EXPENSE_DESCRIPTION + " TEXT, " +
                 COLUMN_EXPENSE_AMOUNT + " REAL, " +
                 COLUMN_EXPENSE_CATEGORY + " TEXT, " +
+                COLUMN_EXPENSE_IS_RECURRING + " INTEGER DEFAULT 0, " +
                 COLUMN_EXPENSE_DATE + " INTEGER);";
         db.execSQL(CREATE_EXPENSE_TABLE);
 

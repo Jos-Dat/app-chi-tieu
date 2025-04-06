@@ -9,6 +9,7 @@
         android:id="@+id/rv_budgets"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="#D9EAFD"
         android:clipToPadding="false"
         android:padding="8dp"
         tools:listitem="@layout/item_budget" />
@@ -28,13 +29,14 @@
             android:layout_height="120dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_empty_budget"
-            app:tint="@color/grey_icon" />
+            app:tint="#BCCCDC" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Chưa có ngân sách nào"
+            android:text="No budget yet"
+            android:textColor="#9AA6B2"
             android:textSize="18sp" />
 
         <TextView
@@ -42,8 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Hãy thêm ngân sách để bắt đầu quản lý chi tiêu của bạn"
-            android:textColor="@color/grey_text"
+            android:text="Add a budget to start managing your expenses"
+            android:textColor="#9AA6B2"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -53,9 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Thêm ngân sách"
+        android:contentDescription="Add budget"
         android:src="@drawable/ic_add"
-        app:backgroundTint="@color/primary"
-        app:tint="@color/white" />
+        app:backgroundTint="@color/black"
+        app:tint="#F8FAFC" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

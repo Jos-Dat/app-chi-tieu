@@ -8,12 +8,21 @@ public class Expense {
     private float amount;
     private String category;
     private long date;
+    private boolean isRecurring;
 
     public Expense(String description, float amount, String category, long date) {
         this.description = description;
         this.amount = amount;
         this.category = category;
         this.date = date;
+    }
+
+    public boolean isRecurring() {
+        return isRecurring;
+    }
+
+    public void setRecurring(boolean recurring) {
+        isRecurring = recurring;
     }
 
     public int getId() {

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F8FAFC"
     tools:context=".fragments.UserProfileFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -34,7 +35,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Thông tin cá nhân"
+                        android:text="Personal Information"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -47,14 +49,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tên đăng nhập: "
+                            android:text="Username: "
+                            android:textColor="#2E3037"
                             android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="#BCCCDC"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="user123" />
@@ -69,13 +72,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Email: "
+                            android:textColor="#2E3037"
                             android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="#BCCCDC"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="user@example.com" />
@@ -87,8 +91,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Đổi mật khẩu"
-                        app:icon="@drawable/ic_lock" />
+                        android:text="Change Password"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_lock"
+                        app:iconTint="#BCCCDC"
+                        android:backgroundTint="@color/black"
+                        app:strokeColor="#BCCCDC"
+                        />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -97,7 +106,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Báo cáo đã lưu"
+                android:text="Saved Reports"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -116,7 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
-                android:text="Chưa có báo cáo nào được lưu"
+                android:text="No reports have been saved yet"
+                android:textColor="#BCCCDC"
                 android:textSize="16sp"
                 android:visibility="gone" />
 
@@ -125,8 +136,11 @@
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Đăng xuất"
-                app:icon="@drawable/ic_logout" />
+                android:text="Log Out"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="#BCCCDC"
+                app:backgroundTint="@color/black" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

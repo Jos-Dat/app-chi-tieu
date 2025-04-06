@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,31 +5,45 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp"
+    android:padding="25dp"
+    android:background="#F8F5F5"
     tools:context=".activities.LoginActivity">
 
     <ImageView
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginBottom="32dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:text="Quản lý chi tiêu"
-        android:textColor="@color/primary"
+        android:text="Expense Management"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="30dp"
+        android:text="Track your expense, Manage your budget"
+        android:textStyle="italic" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Tên đăng nhập"
-        app:startIconDrawable="@drawable/ic_person">
+        android:hint="Username"
+        app:startIconDrawable="@drawable/ic_person"
+        app:boxBackgroundColor="#D9EAFD"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusTopStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_username"
@@ -44,9 +57,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:hint="Mật khẩu"
+        android:hint="Password"
         app:endIconMode="password_toggle"
-        app:startIconDrawable="@drawable/ic_lock">
+        app:startIconDrawable="@drawable/ic_lock"
+        app:boxBackgroundColor="#D9EAFD"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusTopStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_password"
@@ -62,8 +80,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:padding="12dp"
-        android:text="Đăng nhập"
-        android:textSize="16sp" />
+        android:text="Login"
+        android:textSize="16sp"
+        android:backgroundTint="@color/black"
+        android:textColor="#FFFFFF" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,17 +94,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chưa có tài khoản? "
-            android:textSize="16sp" />
+            android:text="Don't have any account? "
+            android:textSize="14sp"
+            android:textColor="#9AA6B2" />
 
         <TextView
             android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đăng ký ngay"
-            android:textColor="@color/primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:text="Sign up now"
+            android:textColor="#6B6B6B"
+            android:textSize="14sp"
+            android:textStyle="bold|italic" />
     </LinearLayout>
 
 </LinearLayout>
