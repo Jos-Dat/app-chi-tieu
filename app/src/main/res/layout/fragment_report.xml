@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F8FAFC"
     tools:context=".fragments.ReportFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -28,14 +29,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:backgroundTint="#D9EAFD"
                     android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Khoảng thời gian"
+                        android:text="Date Range"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
+                        android:backgroundTint="#D9EAFD"
                         android:textStyle="bold" />
 
                     <TextView
@@ -43,8 +47,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        android:textColor="#113750"
                         android:textSize="16sp"
-                        tools:text="Báo cáo từ 01/01/2022 đến 31/01/2022" />
+                        tools:text="Report from 01/01/2022 to 01/31/2022" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -58,8 +63,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="Từ ngày"
-                            app:icon="@drawable/ic_calendar" />
+                            android:text="Start Date"
+                            android:textColor="#9AA6B2"
+                            app:icon="@drawable/ic_calendar"
+                            app:iconTint="#BCCCDC"
+                            app:strokeColor="#BCCCDC" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_end_date"
@@ -68,8 +76,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Đến ngày"
-                            app:icon="@drawable/ic_calendar" />
+                            android:text="End Date"
+                            android:textColor="#9AA6B2"
+                            app:icon="@drawable/ic_calendar"
+                            app:iconTint="#BCCCDC"
+                            app:strokeColor="#BCCCDC" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -77,7 +88,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Tạo báo cáo" />
+                        android:text="Generate Report"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/black" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -99,7 +112,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Tổng chi tiêu"
+                        android:text="Total Expenses"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -107,10 +121,10 @@
                         android:id="@+id/tv_total_expense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/expense_red"
+                        android:textColor="#BCCCDC"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        tools:text="2.000.000 đ" />
+                        tools:text="$2,000.00" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -132,7 +146,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Chi tiêu theo danh mục"
+                        android:text="Expenses by Category"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -162,7 +177,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Chi tiêu theo ngày"
+                        android:text="Expenses by Day"
+                        android:textColor="#9AA6B2"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -179,7 +195,9 @@
                 android:id="@+id/btn_save_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lưu báo cáo này" />
+                android:text="Save This Report"
+                android:textColor="#9AA6B2"
+                app:backgroundTint="#D9EAFD" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

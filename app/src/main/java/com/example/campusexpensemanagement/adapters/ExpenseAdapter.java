@@ -1,5 +1,7 @@
 package com.example.campusexpensemanagement.adapters;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.campusexpensemanagement.R;
@@ -62,6 +65,18 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
                 listener.onDeleteExpense(expense);
             }
         });
+
+        // Đánh dấu chi tiêu định kỳ một cách trực quan
+        if (expense.isRecurring()) {
+            // Ví dụ: Thêm icon hoặc thay đổi màu sắc
+            holder.tvRecurring.setVisibility(View.VISIBLE);
+            holder.tvRecurring.setText("Định kỳ");
+        } else {
+            holder.itemView.setBackgroundColor(Color.WHITE);
+            holder.tvRecurring.setVisibility(View.GONE);
+        }
+        Log.d("DEBUG_EXPENSE", "desc=" + expense.getDescription() + " | isRecurring=" + expense.isRecurring());
+
     }
 
     @Override
@@ -75,7 +90,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     }
 
     static class ExpenseViewHolder extends RecyclerView.ViewHolder {
-        TextView tvExpenseDescription, tvExpenseAmount, tvExpenseCategory, tvExpenseDate;
+        TextView tvExpenseDescription, tvExpenseAmount, tvExpenseCategory, tvExpenseDate, tvRecurring;
         ImageButton btnEdit, btnDelete;
 
         ExpenseViewHolder(@NonNull View itemView) {
@@ -86,6 +101,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
             tvExpenseDate = itemView.findViewById(R.id.tv_expense_date);
             btnEdit = itemView.findViewById(R.id.btn_edit_expense);
             btnDelete = itemView.findViewById(R.id.btn_delete_expense);
+            tvRecurring = itemView.findViewById(R.id.tv_recurring);
         }
     }
 }

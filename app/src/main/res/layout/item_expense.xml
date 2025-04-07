@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#F8FAFC"
         android:orientation="horizontal"
         android:padding="12dp">
 
@@ -20,15 +21,31 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_expense_description"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="Mua sách giáo trình" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tv_expense_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Buy textbooks" />
+
+                <TextView
+                    android:id="@+id/tv_recurring"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Recurring"
+                    android:textColor="#BC6651"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_expense_category"
@@ -38,15 +55,15 @@
                 android:background="@drawable/bg_category_chip"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:textColor="@color/white"
+                android:textColor="#F8FAFC"
                 android:textSize="12sp"
-                tools:text="Học tập" />
+                tools:text="Education" />
 
             <TextView
                 android:id="@+id/tv_expense_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey_text"
+                android:textColor="#4E5359"
                 android:textSize="12sp"
                 tools:text="01/01/2022" />
         </LinearLayout>
@@ -61,10 +78,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:textColor="@color/expense_red"
+                android:textColor="#1E81D9"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="150.000 đ" />
+                tools:text="$150.00" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -77,18 +94,18 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Chỉnh sửa"
+                    android:contentDescription="Edit"
                     android:src="@drawable/ic_edit"
-                    app:tint="@color/grey_icon" />
+                    app:tint="#000000" />
 
                 <ImageButton
                     android:id="@+id/btn_delete_expense"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Xóa"
+                    android:contentDescription="Delete"
                     android:src="@drawable/ic_delete"
-                    app:tint="@color/grey_icon" />
+                    app:tint="#000000" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

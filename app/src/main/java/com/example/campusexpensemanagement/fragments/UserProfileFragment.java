@@ -162,19 +162,19 @@ public class UserProfileFragment extends Fragment implements ExpenseReportAdapte
 
             // Validate input
             if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter full information", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Check current password
             if (!currentPassword.equals(currentUser.getPassword())) {
-                Toast.makeText(getContext(), "Mật khẩu hiện tại không đúng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Check if new passwords match
             if (!newPassword.equals(confirmPassword)) {
-                Toast.makeText(getContext(), "Mật khẩu mới không khớp", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "New password does not match!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -183,10 +183,10 @@ public class UserProfileFragment extends Fragment implements ExpenseReportAdapte
             boolean updated = userDAO.updateUser(currentUser);
 
             if (updated) {
-                Toast.makeText(getContext(), "Đã cập nhật mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Successfully updated password!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Toast.makeText(getContext(), "Có lỗi xảy ra khi cập nhật mật khẩu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error occurs when updating the password!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -221,7 +221,7 @@ public class UserProfileFragment extends Fragment implements ExpenseReportAdapte
 
         // Set report data
         tvReportType.setText(report.getReportType());
-        tvReportPeriod.setText(String.format("Từ %s đến %s",
+        tvReportPeriod.setText(String.format("Fomr %s to %s",
                 formatDate(report.getStartDate()),
                 formatDate(report.getEndDate())));
         tvTotalExpense.setText(String.format("%.2f đ", report.getTotalExpenses()));
@@ -248,16 +248,16 @@ public class UserProfileFragment extends Fragment implements ExpenseReportAdapte
 
     private void showDeleteReportConfirmationDialog(ExpenseReport report) {
         new AlertDialog.Builder(getContext())
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc muốn xóa báo cáo này không?")
-                .setPositiveButton("Xóa", (dialog, which) -> {
+                .setTitle("Confirm delete")
+                .setMessage("Are you sure you want to delete this report??")
+                .setPositiveButton("Delete", (dialog, which) -> {
                     // Delete report
                     reportDAO.deleteExpenseReport(report.getId());
                     // Refresh report list
                     loadSavedReports();
-                    Toast.makeText(getContext(), "Đã xóa báo cáo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Report deleteed", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Hủy", null)
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 

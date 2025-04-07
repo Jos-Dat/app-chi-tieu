@@ -29,6 +29,7 @@ public class ExpenseDAO {
         values.put(ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY, expense.getCategory());
         values.put(ExpenseDatabaseHelper.COLUMN_EXPENSE_DATE, expense.getDate());
         values.put(ExpenseDatabaseHelper.COLUMN_EXPENSE_USER_ID, expense.getUserId());
+        values.put("is_recurring", expense.isRecurring() ? 1 : 0); // Lưu trạng thái recurring
 
         long result = db.insert(ExpenseDatabaseHelper.TABLE_EXPENSE, null, values);
         db.close();
@@ -96,6 +97,9 @@ public class ExpenseDAO {
                 expense.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_ID)));
                 expense.setUserId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_USER_ID)));
 
+                int isRecurring = cursor.getInt(cursor.getColumnIndex("is_recurring"));
+                expense.setRecurring(isRecurring == 1);
+
                 expenses.add(expense);
             } while (cursor.moveToNext());
 
@@ -105,6 +109,56 @@ public class ExpenseDAO {
         db.close();
         return expenses;
     }
+
+    public Expense getExpenseById(int id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("expenses", null, "id = ?", new String[]{String.valueOf(id)},
+                null, null, null);
+        Expense expense = null;
+        if (cursor.moveToFirst()) {
+            expense = new Expense(
+                    cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                    cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("category")),
+                    cursor.getLong(cursor.getColumnIndexOrThrow("date"))
+            );
+            // Gán lại id cho expense
+            expense.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+        }
+        cursor.close();
+        db.close();
+        return expense;
+    }
+
+    @SuppressLint("Range")
+    public List<Expense> getUserExpensesByDate(int userId, long date) {
+        List<Expense> expenses = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // Sửa lại thành:
+        Cursor cursor = db.query("expenses", null, "userId = ? AND date = ?",
+                new String[]{String.valueOf(userId), String.valueOf(date)}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Expense expense = new Expense(
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("category")),
+                        cursor.getLong(cursor.getColumnIndexOrThrow("date"))
+                );
+                // Gán lại id cho expense
+                expense.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+
+                int isRecurring = cursor.getInt(cursor.getColumnIndex("is_recurring"));
+                expense.setRecurring(isRecurring == 1);
+
+                expenses.add(expense);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return expenses;
+    }
+
 
     // Lấy chi tiêu theo người dùng
     @SuppressLint("Range")
@@ -133,6 +187,9 @@ public class ExpenseDAO {
 
                 expense.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_ID)));
                 expense.setUserId(userId);
+
+                int isRecurring = cursor.getInt(cursor.getColumnIndex("is_recurring"));
+                expense.setRecurring(isRecurring == 1);
 
                 expenses.add(expense);
             } while (cursor.moveToNext());

@@ -129,7 +129,7 @@ public class ReportFragment extends Fragment {
         btnStartDate.setText(DateTimeUtils.formatDate(startDate));
         btnEndDate.setText(DateTimeUtils.formatDate(endDate));
 
-        tvReportPeriod.setText(String.format("Báo cáo từ %s đến %s",
+        tvReportPeriod.setText(String.format("Report from %s to %s",
                 DateTimeUtils.formatDate(startDate),
                 DateTimeUtils.formatDate(endDate)));
     }
@@ -147,7 +147,7 @@ public class ReportFragment extends Fragment {
 
                     // Ensure start date is before end date
                     if (startDate > endDate) {
-                        Toast.makeText(getContext(), "Ngày bắt đầu phải trước ngày kết thúc", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "The start date must be before the end!", Toast.LENGTH_SHORT).show();
                         startDate = endDate;
                         startDateCalendar.setTimeInMillis(endDate);
                     }
@@ -174,7 +174,7 @@ public class ReportFragment extends Fragment {
 
                     // Ensure end date is after start date
                     if (endDate < startDate) {
-                        Toast.makeText(getContext(), "Ngày kết thúc phải sau ngày bắt đầu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "The end date must be after the beginning date!", Toast.LENGTH_SHORT).show();
                         endDate = startDate;
                         endDateCalendar.setTimeInMillis(startDate);
                     }
@@ -229,7 +229,7 @@ public class ReportFragment extends Fragment {
         }
 
         // Create and configure pie chart data set
-        PieDataSet dataSet = new PieDataSet(entries, "Chi tiêu theo danh mục");
+        PieDataSet dataSet = new PieDataSet(entries, "Expense according to the category");
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.WHITE);
@@ -240,7 +240,7 @@ public class ReportFragment extends Fragment {
         // Configure pie chart
         pieChartCategory.setData(data);
         pieChartCategory.getDescription().setEnabled(false);
-        pieChartCategory.setCenterText("Chi tiêu theo danh mục");
+        pieChartCategory.setCenterText("Expense according to the category");
         pieChartCategory.setCenterTextSize(16f);
         pieChartCategory.setHoleRadius(40f);
         pieChartCategory.setTransparentCircleRadius(45f);
@@ -275,7 +275,7 @@ public class ReportFragment extends Fragment {
         }
 
         // Create and configure bar chart data set
-        BarDataSet dataSet = new BarDataSet(entries, "Chi tiêu theo ngày");
+        BarDataSet dataSet = new BarDataSet(entries, "Expense by day");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(12f);
 
@@ -320,9 +320,9 @@ public class ReportFragment extends Fragment {
         long reportId = reportDAO.addExpenseReport(report);
 
         if (reportId != -1) {
-            Toast.makeText(getContext(), "Đã lưu báo cáo thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Report saved successfully!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Có lỗi xảy ra khi lưu báo cáo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Error when save report!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -338,17 +338,17 @@ public class ReportFragment extends Fragment {
                 endCal.get(Calendar.MONTH) == startCal.get(Calendar.MONTH) &&
                 endCal.get(Calendar.YEAR) == startCal.get(Calendar.YEAR) &&
                 endCal.get(Calendar.DAY_OF_MONTH) == endCal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-            return "Hàng tháng";
+            return "Monthly";
         }
 
         // Check if it's a yearly report
         if (startCal.get(Calendar.DAY_OF_YEAR) == 1 &&
                 endCal.get(Calendar.YEAR) == startCal.get(Calendar.YEAR) &&
                 endCal.get(Calendar.DAY_OF_YEAR) == endCal.getActualMaximum(Calendar.DAY_OF_YEAR)) {
-            return "Hàng năm";
+            return "Yearly";
         }
 
         // Otherwise it's a custom report
-        return "Tùy chỉnh";
+        return "Custom";
     }
 }

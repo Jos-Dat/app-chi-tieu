@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#F8FAFC"
         android:orientation="horizontal"
         android:padding="12dp">
 
@@ -27,9 +28,9 @@
                 android:layout_marginBottom="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="#000000"
                 android:textSize="16sp"
-                tools:text="Mua sách giáo trình" />
+                tools:text="Buy textbooks" />
 
             <TextView
                 android:id="@+id/tv_expense_category"
@@ -38,9 +39,9 @@
                 android:background="@drawable/bg_category_chip"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:textColor="@color/white"
+                android:textColor="#F8FAFC"
                 android:textSize="12sp"
-                tools:text="Học tập" />
+                tools:text="Education" />
         </LinearLayout>
 
         <LinearLayout
@@ -54,18 +55,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:textColor="@color/expense_red"
+                android:textColor="#227DD1"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="150.000 đ" />
+                tools:text="$150.00" />
 
             <TextView
                 android:id="@+id/tv_expense_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey_text"
+                android:textColor="#323D4E"
                 android:textSize="12sp"
-                tools:text="1 giờ trước" />
+                tools:text="1 hour ago" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

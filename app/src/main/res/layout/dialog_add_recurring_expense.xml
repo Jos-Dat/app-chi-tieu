@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="Add New Expense"
+        android:text="Add Recurring Expense"
         android:textSize="20sp"
         android:textColor="@color/black"
         android:textStyle="bold" />
@@ -22,15 +22,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Description"
-        app:hintTextColor="#787878"
-        app:boxBackgroundColor="#E1EFFD"
+        app:boxBackgroundColor="#D9EAFD"
         app:boxCornerRadiusBottomEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusTopStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_expense_description"
+            android:id="@+id/et_recurring_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -42,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Amount"
-        app:hintTextColor="#787878"
         app:boxBackgroundColor="#D9EAFD"
         app:boxCornerRadiusBottomEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -50,7 +48,7 @@
         app:boxCornerRadiusTopStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_expense_amount"
+            android:id="@+id/et_recurring_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
@@ -66,7 +64,7 @@
         android:textColor="#9AA6B2" />
 
     <Spinner
-        android:id="@+id/sp_expense_category"
+        android:id="@+id/sp_recurring_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -77,21 +75,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Date"
+        android:text="Frequency"
+        android:textSize="16sp"
+        android:textColor="#9AA6B2" />
+
+    <Spinner
+        android:id="@+id/sp_recurring_frequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:minHeight="48dp"
+        android:backgroundTint="#D9EAFD" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Start Date"
         android:textSize="16sp"
         android:textColor="#9AA6B2" />
 
     <Button
-        android:id="@+id/btn_pick_date"
+        android:id="@+id/btn_pick_start_date"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical|start"
+        android:textAlignment="textStart"
+        android:text="01/04/2025"
+        android:textColor="#3D0301"
+        android:backgroundTint="#D9EAFD" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="End Date"
+        android:textSize="16sp"
+        android:textColor="#9AA6B2" />
+
+    <Button
+        android:id="@+id/btn_pick_end_date"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:gravity="center_vertical|start"
         android:textAlignment="textStart"
+        android:text="31/12/2025"
         android:textColor="#3D0301"
-        android:backgroundTint="#D9EAFD"
-        tools:text="01/01/2022" />
+        android:backgroundTint="#D9EAFD" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -106,10 +140,10 @@
             android:layout_weight="1"
             android:backgroundTint="#F8FAFC"
             android:text="Cancel"
-            android:textColor="#000000" />
+            android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/btn_save_expense"
+            android:id="@+id/btn_save_recurring"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

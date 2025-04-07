@@ -66,19 +66,19 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Validate input
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter full information", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid username or password!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check if username already exists
         if (userDAO.checkUser(username)) {
-            Toast.makeText(this, "Tên đăng nhập đã tồn tại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Username already exist!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (userId != -1) {
             // Registration successful
-            Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
 
             // Save user session
             sessionManager.createLoginSession((int) userId, username);
@@ -98,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "Đăng ký thất bại. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Register failed. Please try again!", Toast.LENGTH_SHORT).show();
         }
     }
 }

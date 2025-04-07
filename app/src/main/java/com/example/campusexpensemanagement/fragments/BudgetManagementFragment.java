@@ -169,14 +169,14 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
             String amountStr = etAmount.getText().toString().trim();
 
             if (amountStr.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Please enter the amount!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             try {
                 float amount = Float.parseFloat(amountStr);
                 if (amount <= 0) {
-                    Toast.makeText(requireContext(), "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "The amount must be greater than 0!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -186,15 +186,15 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
                     // Update existing budget
                     existingBudget.setAmount(amount);
                     budgetDAO.updateBudget(existingBudget);
-                    Toast.makeText(requireContext(), "Cập nhật ngân sách thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Budget update successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Add new budget
                     Budget newBudget = new Budget(category, amount);
                     long id = budgetDAO.addBudget(newBudget);
                     if (id > 0) {
-                        Toast.makeText(requireContext(), "Thêm ngân sách thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Budget added successfully!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(requireContext(), "Thêm ngân sách thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Budget added failed!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -202,7 +202,7 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
                 loadBudgets();
 
             } catch (NumberFormatException e) {
-                Toast.makeText(requireContext(), "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Invalid amount!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -238,12 +238,12 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
     }
 
     private void addDefaultCategories() {
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Thực phẩm"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Vận chuyển"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Học tập"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Giải trí"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Sức khoẻ"));
-        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Khác"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Food"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Transportation"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Education"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Entertainment"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Health"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Others"));
     }
 
     @Override
@@ -254,14 +254,14 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
     @Override
     public void onDeleteBudget(Budget budget) {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc chắn muốn xóa ngân sách cho " + budget.getCategory() + "?")
-                .setPositiveButton("Xóa", (dialog, which) -> {
+                .setTitle("Delete Confirm!")
+                .setMessage("Are you sure want to delete budget for " + budget.getCategory() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> {
                     budgetDAO.deleteBudget(budget.getId());
                     loadBudgets();
-                    Toast.makeText(requireContext(), "Đã xóa ngân sách", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Hủy", null)
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -287,29 +287,29 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
             String amountStr = etAmount.getText().toString().trim();
 
             if (amountStr.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Please enter the amount!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             try {
                 float amount = Float.parseFloat(amountStr);
                 if (amount <= 0) {
-                    Toast.makeText(requireContext(), "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "The amount must be greater than 0!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 budget.setAmount(amount);
                 boolean success = budgetDAO.updateBudget(budget);
                 if (success) {
-                    Toast.makeText(requireContext(), "Cập nhật ngân sách thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Budget updated successfully!", Toast.LENGTH_SHORT).show();
                     loadBudgets();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(requireContext(), "Cập nhật ngân sách thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Budget updated failed!", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (NumberFormatException e) {
-                Toast.makeText(requireContext(), "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Invalid amount!", Toast.LENGTH_SHORT).show();
             }
         });
 
