@@ -11,6 +11,9 @@ public class SessionManager {
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USERNAME = "username";
+    private static final String KEY_REMEMBER_ME = "rememberMe";
+    private static final String KEY_REMEMBERED_USERNAME = "rememberedUsername";
+    private static final String KEY_REMEMBERED_PASSWORD = "rememberedPassword";
 
     // Shared Preferences
     private SharedPreferences pref;
@@ -56,6 +59,46 @@ public class SessionManager {
 
     public String getUsername() {
         return pref.getString(KEY_USERNAME, null);
+    }
+
+    /**
+     * Save remember me credentials
+     */
+    public void setRememberMe(String username, String password) {
+        editor.putBoolean(KEY_REMEMBER_ME, true);
+        editor.putString(KEY_REMEMBERED_USERNAME, username);
+        editor.putString(KEY_REMEMBERED_PASSWORD, password);
+        editor.commit();
+    }
+    /**
+     * Clear remember me credentials
+     */
+    public void clearRememberMe() {
+        editor.putBoolean(KEY_REMEMBER_ME, false);
+        editor.remove(KEY_REMEMBERED_USERNAME);
+        editor.remove(KEY_REMEMBERED_PASSWORD);
+        editor.commit();
+    }
+
+    /**
+     * Check if remember me is enabled
+     */
+    public boolean isRememberMeEnabled() {
+        return pref.getBoolean(KEY_REMEMBER_ME, false);
+    }
+
+    /**
+     * Get remembered username
+     */
+    public String getRememberedUsername() {
+        return pref.getString(KEY_REMEMBERED_USERNAME, "");
+    }
+
+    /**
+     * Get remembered password
+     */
+    public String getRememberedPassword() {
+        return pref.getString(KEY_REMEMBERED_PASSWORD, "");
     }
 
     /**
