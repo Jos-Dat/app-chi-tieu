@@ -261,6 +261,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
     private void processRecurringExpenses() {
         List<RecurringExpense> recurringExpenses = recurringExpenseDAO.getUserRecurringExpenses(userId);
         long currentTime = System.currentTimeMillis();
+        Calendar cal = Calendar.getInstance();
 
         for (RecurringExpense recurring : recurringExpenses) {
             Expense baseExpense = expenseDAO.getExpenseById(recurring.getExpenseId());
@@ -270,27 +271,17 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             long endDate = recurring.getEndDate();
             String frequency = recurring.getFrequency();
 
-            long interval;
-            switch (frequency) {
-                case "Daily":
-                    interval = 24 * 60 * 60 * 1000L; // 1 ngày
-                    break;
-                case "Weekly":
-                    interval = 7 * 24 * 60 * 60 * 1000L; // 1 tuần
-                    break;
-                case "Monthly":
-                    interval = 30 * 24 * 60 * 60 * 1000L; // 1 tháng (ước lượng)
-                    break;
-                default:
-                    continue;
-            }
-
+            cal.setTimeInMillis(startDate);
             long nextDate = startDate;
+
             while (nextDate <= endDate && nextDate <= currentTime) {
-                // Kiểm tra xem chi tiêu đã tồn tại chưa
                 List<Expense> existing = expenseDAO.getUserExpensesByDate(userId, nextDate);
-                boolean alreadyAdded = existing.stream().anyMatch(e -> e.getDescription().equals(baseExpense.getDescription()) &&
-                        e.getAmount() == baseExpense.getAmount() && e.getCategory().equals(baseExpense.getCategory()));
+                boolean alreadyAdded = existing.stream().anyMatch(e ->
+                        e.getDescription().equals(baseExpense.getDescription()) &&
+                                e.getAmount() == baseExpense.getAmount() &&
+                                e.getCategory().equals(baseExpense.getCategory()) &&
+                                e.isRecurring()
+                );
 
                 if (!alreadyAdded) {
                     Expense newExpense = new Expense(baseExpense.getDescription(), baseExpense.getAmount(),
@@ -305,7 +296,14 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                         transactionHistoryDAO.addTransaction(transaction);
                     }
                 }
-                nextDate += interval;
+
+                switch (frequency) {
+                    case "Daily": cal.add(Calendar.DAY_OF_MONTH, 1); break;
+                    case "Weekly": cal.add(Calendar.WEEK_OF_YEAR, 1); break;
+                    case "Monthly": cal.add(Calendar.MONTH, 1); break;
+                    default: continue;
+                }
+                nextDate = cal.getTimeInMillis();
             }
         }
     }
@@ -354,7 +352,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             categoryNames.add(category.getName());
         }
 
-        // If no categories exist, add some defaults
         if (categoryNames.isEmpty()) {
             addDefaultCategories();
             categories = categoryDAO.getAllCategories();
@@ -373,7 +370,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
         // Create and show dialog
         final AlertDialog dialog = builder.create();
 
-        // Set up button click listeners
         btnSave.setOnClickListener(v -> {
             String description = etDescription.getText().toString().trim();
             String amountStr = etAmount.getText().toString().trim();
@@ -384,7 +380,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
-            // Parse amount
             float amount;
             try {
                 amount = Float.parseFloat(amountStr);
@@ -393,35 +388,35 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
-            // Create and save expense
+            float totalSpent = 0;
+            List<Expense> userExpenses = expenseDAO.getUserExpenses(userId);
+            for (Expense e : userExpenses) {
+                if (e.getCategory().equals(category)) {
+                    totalSpent += e.getAmount();
+                }
+            }
+
+            if (!checkBudgetAndNotify(category, amount, totalSpent)) {
+                return; // Ngăn thêm nếu vượt ngân sách
+            }
+
             Expense expense = new Expense(description, amount, category, selectedDate);
-            expense.setUserId(userId); // Thêm dòng này để thiết lập userId
+            expense.setUserId(userId);
             long expenseId = expenseDAO.addExpense(expense);
 
             if (expenseId != -1) {
-                // Also add to transaction history
                 TransactionHistory transaction = new TransactionHistory(
-                        userId,
-                        amount,
-                        description,
-                        selectedDate,
-                        "Expense" // expense type
-                );
+                        userId, amount, description, selectedDate, "Expense");
                 transactionHistoryDAO.addTransaction(transaction);
-                checkAndNotifyBudgetExceeded(getContext(), userId, category, amount);
-
-
-                // Refresh expense list
                 loadExpenses();
                 Toast.makeText(getContext(), "Expense added successfully!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Toast.makeText(getContext(), "Error when add expense!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error when adding expense!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-
         dialog.show();
     }
 
@@ -495,7 +490,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
-            // Parse amount
             float amount;
             try {
                 amount = Float.parseFloat(amountStr);
@@ -504,27 +498,54 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
-            // Update expense
+            float totalSpent = 0;
+            List<Expense> userExpenses = expenseDAO.getUserExpenses(userId);
+            for (Expense e : userExpenses) {
+                if (e.getCategory().equals(category) && e.getId() != expense.getId()) { // Bỏ qua chi tiêu hiện tại
+                    totalSpent += e.getAmount();
+                }
+            }
+
+            if (!checkBudgetAndNotify(category, amount, totalSpent)) {
+                return; // Ngăn sửa nếu vượt ngân sách
+            }
+
             expense.setDescription(description);
             expense.setAmount(amount);
             expense.setCategory(category);
             expense.setDate(selectedDate);
 
             boolean updated = expenseDAO.updateExpense(expense);
-
             if (updated) {
-                // Refresh expense list
                 loadExpenses();
                 Toast.makeText(getContext(), "Expense updated successfully!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Toast.makeText(getContext(), "Error when updated expense!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error when updating expense!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
+    }
+
+    private boolean checkBudgetAndNotify(String category, float amount, float totalSpent) {
+        Budget budget = budgetDAO.getBudgetByCategory(category);
+        if (budget != null) {
+            float budgetAmount = budget.getAmount();
+            float newTotal = totalSpent + amount;
+            float ratio = newTotal / budgetAmount;
+
+            if (ratio > 1.0f) {
+                NotificationHelper.sendBudgetExceededNotification(requireContext(), category, newTotal, budgetAmount);
+                Toast.makeText(getContext(), "Over budget! Cannot proceed.", Toast.LENGTH_LONG).show();
+                return false; // Không cho thêm/sửa
+            } else if (ratio >= 0.8f) {
+                NotificationHelper.sendBudgetWarningNotification(requireContext(), category, newTotal, budgetAmount);
+            }
+        }
+        return true; // Cho phép thêm/sửa
     }
 
     private void showDeleteConfirmationDialog(Expense expense) {
@@ -541,30 +562,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
-    private void checkAndNotifyBudgetExceeded(Context context, int userId, String category, float newAmount) {
-        // Lấy tổng chi tiêu hiện tại của người dùng cho danh mục đó
-        List<Expense> expenses = expenseDAO.getUserExpenses(userId);
-        float totalSpent = 0;
-        for (Expense e : expenses) {
-            if (e.getCategory().equals(category)) {
-                totalSpent += e.getAmount();
-            }
-        }
-
-        // Lấy ngân sách đã đặt cho danh mục đó
-        Budget budget = budgetDAO.getBudgetByCategory(category);
-        if (budget != null && totalSpent > budget.getAmount()) {
-            NotificationHelper.sendBudgetExceededNotification(context, category, totalSpent, budget.getAmount());
-
-            String message = "Exceed the budget: \"" + category + "\" (" + totalSpent + "/" + budget.getAmount() + "đ)";
-
-            View rootView = ((Activity) context).findViewById(android.R.id.content);
-            Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).setAction("OK", v -> {}).show();
-        }
-
-    }
-
 
     private void addDefaultCategories() {
         // Add some default categories if none exist

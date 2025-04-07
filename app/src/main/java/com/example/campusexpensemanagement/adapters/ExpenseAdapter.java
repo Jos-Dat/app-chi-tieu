@@ -70,7 +70,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         if (expense.isRecurring()) {
             // Ví dụ: Thêm icon hoặc thay đổi màu sắc
             holder.tvRecurring.setVisibility(View.VISIBLE);
-            holder.tvRecurring.setText("Định kỳ");
+            holder.tvRecurring.setText("Recurring Expense");
         } else {
             holder.itemView.setBackgroundColor(Color.WHITE);
             holder.tvRecurring.setVisibility(View.GONE);
