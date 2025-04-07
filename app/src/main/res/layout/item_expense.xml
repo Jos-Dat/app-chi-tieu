@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Recurring"
-                    android:textColor="#BC6651"
+                    android:textColor="#D7155F"
                     android:textStyle="italic"
                     android:visibility="gone" />
             </LinearLayout>
