@@ -57,7 +57,7 @@
                             android:id="@+id/tv_username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#BCCCDC"
+                            android:textColor="#444749"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="user123" />
@@ -79,7 +79,7 @@
                             android:id="@+id/tv_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#BCCCDC"
+                            android:textColor="#323538"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="user@example.com" />
@@ -87,17 +87,16 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_change_password"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/primary_light"
                         android:text="Change Password"
                         android:textColor="@color/white"
                         app:icon="@drawable/ic_lock"
-                        app:iconTint="#BCCCDC"
-                        android:backgroundTint="@color/black"
-                        app:strokeColor="#BCCCDC"
-                        />
+                        app:iconTint="#101010"
+                        app:strokeColor="#BCCCDC" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -139,8 +138,8 @@
                 android:text="Log Out"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_logout"
-                app:iconTint="#BCCCDC"
-                app:backgroundTint="@color/black" />
+                app:iconTint="#0E0E0F"
+                app:backgroundTint="@color/primary_light" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

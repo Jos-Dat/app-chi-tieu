@@ -90,7 +90,7 @@
                         android:layout_marginTop="16dp"
                         android:text="Generate Report"
                         android:textColor="@color/white"
-                        app:backgroundTint="@color/black" />
+                        app:backgroundTint="@color/primary_light" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -121,7 +121,7 @@
                         android:id="@+id/tv_total_expense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#BCCCDC"
+                        android:textColor="#F42A50"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         tools:text="$2,000.00" />
@@ -196,8 +196,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Save This Report"
-                android:textColor="#9AA6B2"
-                app:backgroundTint="#D9EAFD" />
+                android:textColor="@color/white"
+                app:backgroundTint="@color/primary_light" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

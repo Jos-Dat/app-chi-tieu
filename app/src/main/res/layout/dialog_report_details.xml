@@ -140,5 +140,5 @@
         android:layout_height="wrap_content"
         android:text="Close"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/black" />
+        android:backgroundTint="@color/primary_light" />
 </LinearLayout>
