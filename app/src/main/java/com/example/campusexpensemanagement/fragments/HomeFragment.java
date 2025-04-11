@@ -122,7 +122,7 @@ public class HomeFragment extends Fragment {
         }
 
         // Get total budget
-        List<Budget> budgets = budgetDAO.getAllBudgets();
+        List<Budget> budgets = budgetDAO.getAllBudgets(userId);
         float totalBudget = 0;
         for (Budget budget : budgets) {
             totalBudget += budget.getAmount();

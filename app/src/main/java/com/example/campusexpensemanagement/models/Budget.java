@@ -2,12 +2,22 @@ package com.example.campusexpensemanagement.models;
 
 public class Budget {
     private int id;
+    private int userId;
     private String category;
     private float amount;
 
-    public Budget(String category, float amount) {
+    public Budget(String category, float amount, int userId) {
         this.category = category;
         this.amount = amount;
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getId() {

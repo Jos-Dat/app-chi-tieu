@@ -145,7 +145,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 location[0], location[1] - popupHeight);
     }
 
-
     private void showAddRecurringExpenseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_recurring_expense, null);
@@ -228,7 +227,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             }
 
             // Check if budget exists for this category
-            if (!budgetDAO.budgetExistsForCategory(category)) {
+            if (!budgetDAO.budgetExistsForCategory(category, userId)) {
                 // No budget exists, show error message
                 Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
                 return;
@@ -394,7 +393,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             }
 
             // Check if budget exists for this category
-            if (!budgetDAO.budgetExistsForCategory(category)) {
+            if (!budgetDAO.budgetExistsForCategory(category, userId)) {
                 // No budget exists, show error message
                 Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
                 return;
@@ -511,7 +510,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             }
 
             // Check if budget exists for this category
-            if (!budgetDAO.budgetExistsForCategory(category)) {
+            if (!budgetDAO.budgetExistsForCategory(category, userId)) {
                 // No budget exists, show error message
                 Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
                 return;
@@ -550,7 +549,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
     }
 
     private boolean checkBudgetAndNotify(String category, float amount, float totalSpent) {
-        Budget budget = budgetDAO.getBudgetByCategory(category);
+        Budget budget = budgetDAO.getBudgetByCategory(category, userId);
         if (budget != null) {
             float budgetAmount = budget.getAmount();
             float newTotal = totalSpent + amount;

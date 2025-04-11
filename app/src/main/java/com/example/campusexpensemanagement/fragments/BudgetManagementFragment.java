@@ -72,7 +72,7 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
     }
 
     private void loadBudgets() {
-        budgetList = budgetDAO.getAllBudgets();
+        budgetList = budgetDAO.getAllBudgets(sessionManager.getUserId());
         calculateCategoryExpenses();
 
         if (budgetAdapter == null) {
@@ -168,7 +168,7 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
                     Toast.makeText(requireContext(), "Budget update successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Add new budget
-                    Budget newBudget = new Budget(category, amount);
+                    Budget newBudget = new Budget(category, amount, sessionManager.getUserId());
                     long id = budgetDAO.addBudget(newBudget);
                     if (id > 0) {
                         Toast.makeText(requireContext(), "Budget added successfully!", Toast.LENGTH_SHORT).show();

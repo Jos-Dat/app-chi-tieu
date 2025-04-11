@@ -24,6 +24,7 @@ public class BudgetDAO {
     public long addBudget(Budget budget) {
         db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID, budget.getUserId());
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY, budget.getCategory());
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT, budget.getAmount());
         long result = db.insert(ExpenseDatabaseHelper.TABLE_BUDGET, null, values);
@@ -35,6 +36,7 @@ public class BudgetDAO {
     public boolean updateBudget(Budget budget) {
         db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID, budget.getUserId());
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY, budget.getCategory());
         values.put(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT, budget.getAmount());
 
@@ -46,65 +48,91 @@ public class BudgetDAO {
         );
 
         db.close();
-        return rowsAffected > 0; // Trả về true nếu có ít nhất một hàng được cập nhật
+        return rowsAffected > 0;
     }
 
     // Lấy tất cả ngân sách
     @SuppressLint("Range")
-    public List<Budget> getAllBudgets() {
+    public List<Budget> getAllBudgets(int userId) {
         List<Budget> budgets = new ArrayList<>();
         db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(ExpenseDatabaseHelper.TABLE_BUDGET,
-                null, null, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Budget budget = new Budget(
-                        cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY)),
-                        cursor.getFloat(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT))
-                );
-                budget.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_ID)));
-                budgets.add(budget);
-            } while (cursor.moveToNext());
-            cursor.close();
+        Cursor cursor = db.query(
+                ExpenseDatabaseHelper.TABLE_BUDGET,
+                null,
+                ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)},
+                null, null, null
+        );
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    Budget budget = new Budget(
+                            cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY)),
+                            cursor.getFloat(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT)),
+                            cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID))
+                    );
+                    budget.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_ID)));
+                    budgets.add(budget);
+                }
+            } finally {
+                cursor.close();
+            }
         }
         db.close();
         return budgets;
     }
 
-    // Lấy ngân sách theo danh mục
+    // Lấy ngân sách theo danh mục và userId
     @SuppressLint("Range")
-    public Budget getBudgetByCategory(String category) {
+    public Budget getBudgetByCategory(String category, int userId) {
         db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(ExpenseDatabaseHelper.TABLE_BUDGET,
-                null, ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY + " = ?", new String[]{category},
-                null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            Budget budget = new Budget(
-                    cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY)),
-                    cursor.getFloat(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT))
-            );
-            budget.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_ID)));
-            cursor.close();
-            db.close();
-            return budget;
+        Cursor cursor = db.query(
+                ExpenseDatabaseHelper.TABLE_BUDGET,
+                null,
+                ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY + " = ? AND " +
+                        ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID + " = ?",
+                new String[]{category, String.valueOf(userId)},
+                null, null, null
+        );
+        Budget budget = null;
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    budget = new Budget(
+                            cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY)),
+                            cursor.getFloat(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_AMOUNT)),
+                            cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID))
+                    );
+                    budget.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_BUDGET_ID)));
+                }
+            } finally {
+                cursor.close();
+            }
         }
         db.close();
-        return null;
+        return budget;
     }
 
-    // Add this method to BudgetDAO.java
-    public boolean budgetExistsForCategory(String category) {
+    // Kiểm tra xem ngân sách có tồn tại cho danh mục và userId không
+    public boolean budgetExistsForCategory(String category, int userId) {
         db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 ExpenseDatabaseHelper.TABLE_BUDGET,
                 new String[]{"COUNT(*)"},
-                ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY + " = ?",
-                new String[]{category},
-                null, null, null);
+                ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY + " = ? AND " +
+                        ExpenseDatabaseHelper.COLUMN_BUDGET_USER_ID + " = ?",
+                new String[]{category, String.valueOf(userId)},
+                null, null, null
+        );
         boolean exists = false;
-        if (cursor != null && cursor.moveToFirst()) {
-            exists = cursor.getInt(0) > 0;
-            cursor.close();
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    exists = cursor.getInt(0) > 0;
+                }
+            } finally {
+                cursor.close();
+            }
         }
         db.close();
         return exists;
@@ -113,8 +141,11 @@ public class BudgetDAO {
     // Xóa ngân sách theo ID
     public void deleteBudget(int budgetId) {
         db = dbHelper.getWritableDatabase();
-        db.delete(ExpenseDatabaseHelper.TABLE_BUDGET,
-                ExpenseDatabaseHelper.COLUMN_BUDGET_ID + " = ?", new String[]{String.valueOf(budgetId)});
+        db.delete(
+                ExpenseDatabaseHelper.TABLE_BUDGET,
+                ExpenseDatabaseHelper.COLUMN_BUDGET_ID + " = ?",
+                new String[]{String.valueOf(budgetId)}
+        );
         db.close();
     }
 }
