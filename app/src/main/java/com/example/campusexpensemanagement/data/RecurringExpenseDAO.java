@@ -55,11 +55,4 @@ public class RecurringExpenseDAO {
         return recurringExpenses;
     }
 
-    public void deleteRecurringExpense(int recurringExpenseId) {
-        db = dbHelper.getWritableDatabase();
-        db.delete(ExpenseDatabaseHelper.TABLE_RECURRING_EXPENSE,
-                ExpenseDatabaseHelper.COLUMN_RECURRING_EXPENSE_ID + " = ?", new String[]{String.valueOf(recurringExpenseId)});
-        db.close();
-    }
-
 }

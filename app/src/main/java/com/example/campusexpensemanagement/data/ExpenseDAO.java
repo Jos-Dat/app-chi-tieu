@@ -201,6 +201,24 @@ public class ExpenseDAO {
         return expenses;
     }
 
+    // Add this method to ExpenseDAO.java
+    public boolean hasExpensesForCategory(String category) {
+        db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                ExpenseDatabaseHelper.TABLE_EXPENSE,
+                new String[]{"COUNT(*)"},
+                ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY + " = ?",
+                new String[]{category},
+                null, null, null);
+        boolean hasExpenses = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            hasExpenses = cursor.getInt(0) > 0;
+            cursor.close();
+        }
+        db.close();
+        return hasExpenses;
+    }
+
     // Lấy chi tiêu theo người dùng và khoảng thời gian
     @SuppressLint("Range")
     public List<Expense> getExpensesByUserAndDateRange(int userId, long startDate, long endDate) {

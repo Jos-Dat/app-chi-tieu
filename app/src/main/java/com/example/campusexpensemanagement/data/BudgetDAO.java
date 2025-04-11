@@ -92,6 +92,24 @@ public class BudgetDAO {
         return null;
     }
 
+    // Add this method to BudgetDAO.java
+    public boolean budgetExistsForCategory(String category) {
+        db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                ExpenseDatabaseHelper.TABLE_BUDGET,
+                new String[]{"COUNT(*)"},
+                ExpenseDatabaseHelper.COLUMN_BUDGET_CATEGORY + " = ?",
+                new String[]{category},
+                null, null, null);
+        boolean exists = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            exists = cursor.getInt(0) > 0;
+            cursor.close();
+        }
+        db.close();
+        return exists;
+    }
+
     // Xóa ngân sách theo ID
     public void deleteBudget(int budgetId) {
         db = dbHelper.getWritableDatabase();

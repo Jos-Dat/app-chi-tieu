@@ -227,6 +227,13 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
+            // Check if budget exists for this category
+            if (!budgetDAO.budgetExistsForCategory(category)) {
+                // No budget exists, show error message
+                Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             // Tạo Expense đầu tiên ngay khi lưu recurring
             Expense expense = new Expense(description, amount, category, startDate.get());
             expense.setRecurring(true); // Gán recurring = true
@@ -386,6 +393,13 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 return;
             }
 
+            // Check if budget exists for this category
+            if (!budgetDAO.budgetExistsForCategory(category)) {
+                // No budget exists, show error message
+                Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             float totalSpent = 0;
             List<Expense> userExpenses = expenseDAO.getUserExpenses(userId);
             for (Expense e : userExpenses) {
@@ -493,6 +507,13 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 amount = Float.parseFloat(amountStr);
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Invalid amount!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if budget exists for this category
+            if (!budgetDAO.budgetExistsForCategory(category)) {
+                // No budget exists, show error message
+                Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
                 return;
             }
 
