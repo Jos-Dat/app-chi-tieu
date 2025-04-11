@@ -143,8 +143,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
         anchor.getLocationOnScreen(location);
         fabMenuPopup.showAtLocation(anchor, Gravity.NO_GRAVITY,
                 location[0], location[1] - popupHeight);
-
-
     }
 
 
