@@ -64,36 +64,43 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Validate input
+        // Kiểm tra nhập liệu
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(this, "Please enter full information", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check if passwords match
+        // Kiểm tra mật khẩu có ít nhất 6 ký tự
+        if (password.length() < 6) {
+            etPassword.setError("Password must be at least 6 characters");
+            etPassword.requestFocus();
+            return;
+        }
+
+        // Kiểm tra mật khẩu xác nhận
         if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Invalid username or password!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check if username already exists
+        // Kiểm tra nếu tên người dùng đã tồn tại
         if (userDAO.checkUser(username)) {
-            Toast.makeText(this, "Username already exist!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Username already exists!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create new user
+        // Tạo người dùng mới
         User user = new User(username, email, password);
         long userId = userDAO.addUser(user);
 
         if (userId != -1) {
-            // Registration successful
+            // Đăng ký thành công
             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
 
-            // Save user session
+            // Lưu thông tin phiên đăng nhập
             sessionManager.createLoginSession((int) userId, username);
 
-            // Redirect to main activity
+            // Chuyển đến MainActivity
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -101,4 +108,5 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Register failed. Please try again!", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

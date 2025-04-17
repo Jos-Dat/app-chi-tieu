@@ -219,6 +219,7 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
     private void addDefaultCategories() {
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Food"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Transportation"));
+        categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("House"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Education"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Entertainment"));
         categoryDAO.addCategory(new com.example.campusexpensemanagement.models.Category("Health"));
@@ -232,31 +233,39 @@ public class BudgetManagementFragment extends Fragment implements BudgetAdapter.
 
     @Override
     public void onDeleteBudget(Budget budget) {
-        // Create ExpenseDAO to check for existing expenses
         ExpenseDAO expenseDAO = new ExpenseDAO(requireContext());
 
-        // Check if there are expenses for this category
-        if (expenseDAO.hasExpensesForCategory(budget.getCategory())) {
-            // If expenses exist, show warning dialog
+        // Check if there are expenses related to this category
+        if (expenseDAO.hasExpensesForCategory(budget.getCategory(), sessionManager.getUserId())) {
             new AlertDialog.Builder(requireContext())
-                    .setTitle("Cannot Delete Budget")
-                    .setMessage("This budget has associated expenses. You must delete those expenses first before you can delete this budget.")
+                    .setTitle("Cannot delete budget")
+                    .setMessage("There are expenses related to this category. You need to delete the expenses first.")
                     .setPositiveButton("OK", null)
                     .show();
         } else {
-            // If no expenses exist, proceed with deletion confirmation
+            // Confirm deletion if there are no expenses
             new AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Confirm!")
-                    .setMessage("Are you sure want to delete budget for " + budget.getCategory() + "?")
+                    .setTitle("Confirm deletion")
+                    .setMessage("Are you sure want to delete the budget for " + budget.getCategory() + "?")
                     .setPositiveButton("Delete", (dialog, which) -> {
-                        budgetDAO.deleteBudget(budget.getId());
-                        loadBudgets();
-                        Toast.makeText(requireContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
+                        try {
+                            // Delete the budget
+                            boolean success = budgetDAO.deleteBudget(budget.getId());
+                            if (success) {
+                                loadBudgets(); // Reload the budget list after deletion
+                                Toast.makeText(requireContext(), "Deletion successful", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(requireContext(), "Cannot delete the budget", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
         }
     }
+
 
     private void showEditBudgetDialog(Budget budget) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

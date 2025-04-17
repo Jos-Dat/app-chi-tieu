@@ -139,13 +139,14 @@ public class BudgetDAO {
     }
 
     // Xóa ngân sách theo ID
-    public void deleteBudget(int budgetId) {
+    public boolean deleteBudget(int budgetId) {
         db = dbHelper.getWritableDatabase();
-        db.delete(
+        int rowsDeleted = db.delete(
                 ExpenseDatabaseHelper.TABLE_BUDGET,
                 ExpenseDatabaseHelper.COLUMN_BUDGET_ID + " = ?",
                 new String[]{String.valueOf(budgetId)}
         );
         db.close();
+        return rowsDeleted > 0;
     }
 }

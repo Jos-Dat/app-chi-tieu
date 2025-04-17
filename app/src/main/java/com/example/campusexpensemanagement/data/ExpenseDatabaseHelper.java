@@ -176,6 +176,12 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop tables in reverse order of dependencies to avoid foreign key constraint issues
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRANSACTION_HISTORY);

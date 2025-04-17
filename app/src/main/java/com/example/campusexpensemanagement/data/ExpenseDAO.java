@@ -202,14 +202,19 @@ public class ExpenseDAO {
     }
 
     // Add this method to ExpenseDAO.java
-    public boolean hasExpensesForCategory(String category) {
+    // Kiểm tra chi tiêu có liên quan đến danh mục này không
+    public boolean hasExpensesForCategory(String category, int userId) {
         db = dbHelper.getReadableDatabase();
+        String normalizedCategory = category.trim().toLowerCase();
+
         Cursor cursor = db.query(
                 ExpenseDatabaseHelper.TABLE_EXPENSE,
                 new String[]{"COUNT(*)"},
-                ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY + " = ?",
-                new String[]{category},
-                null, null, null);
+                "LOWER(" + ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY + ") = ? AND " +
+                        ExpenseDatabaseHelper.COLUMN_EXPENSE_USER_ID + " = ?",
+                new String[]{normalizedCategory, String.valueOf(userId)},
+                null, null, null
+        );
         boolean hasExpenses = false;
         if (cursor != null && cursor.moveToFirst()) {
             hasExpenses = cursor.getInt(0) > 0;
@@ -218,6 +223,43 @@ public class ExpenseDAO {
         db.close();
         return hasExpenses;
     }
+
+    // Lấy chi tiêu của người dùng theo danh mục
+    @SuppressLint("Range")
+    public List<Expense> getUserExpensesByCategory(int userId, String category) {
+        List<Expense> expenses = new ArrayList<>();
+        db = dbHelper.getReadableDatabase();
+
+        // Truy vấn chi tiêu theo danh mục và người dùng
+        Cursor cursor = db.query(
+                ExpenseDatabaseHelper.TABLE_EXPENSE,
+                null,
+                ExpenseDatabaseHelper.COLUMN_EXPENSE_USER_ID + " = ? AND " +
+                        ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY + " = ?",
+                new String[]{String.valueOf(userId), category},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Expense expense = new Expense(
+                        cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_DESCRIPTION)),
+                        cursor.getFloat(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_AMOUNT)),
+                        cursor.getString(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_CATEGORY)),
+                        cursor.getLong(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_DATE))
+                );
+                expense.setId(cursor.getInt(cursor.getColumnIndex(ExpenseDatabaseHelper.COLUMN_EXPENSE_ID)));
+                expense.setUserId(userId);
+
+                expenses.add(expense);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return expenses;
+    }
+
 
     // Lấy chi tiêu theo người dùng và khoảng thời gian
     @SuppressLint("Range")

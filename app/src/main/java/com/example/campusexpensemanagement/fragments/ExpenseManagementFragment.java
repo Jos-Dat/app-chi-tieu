@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
     private SessionManager sessionManager;
     private List<Expense> expenseList;
     private ExpenseAdapter expenseAdapter;
+    private Expense expense;
     private int userId;
 
     // For date picker
@@ -172,7 +174,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
                 android.R.layout.simple_spinner_dropdown_item, frequencies);
         spFrequency.setAdapter(frequencyAdapter);
 
-        // Date pickers
+        // Default to current date if no date is selected
         AtomicLong startDate = new AtomicLong(calendarStart.getTimeInMillis());
         AtomicLong endDate = new AtomicLong(calendarEnd.getTimeInMillis());
         btnPickStartDate.setText(DateTimeUtils.formatDate(startDate.get()));
@@ -205,12 +207,7 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
         btnSave.setOnClickListener(v -> {
             String description = etDescription.getText().toString().trim();
             String amountStr = etAmount.getText().toString().trim();
-            Object selectedCategory = spCategory.getSelectedItem();
-            if (selectedCategory == null) {
-                Toast.makeText(getContext(), "Please select category!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String category = selectedCategory.toString();
+            String category = spCategory.getSelectedItem().toString();
             String frequency = spFrequency.getSelectedItem().toString();
 
             if (description.isEmpty() || amountStr.isEmpty()) {
@@ -228,35 +225,54 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
 
             // Check if budget exists for this category
             if (!budgetDAO.budgetExistsForCategory(category, userId)) {
-                // No budget exists, show error message
                 Toast.makeText(getContext(), "No budget exists for " + category + ". Please create a budget first.", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            // Tạo Expense đầu tiên ngay khi lưu recurring
+            // Check if recurring expense already exists
+            List<RecurringExpense> existingRecurringExpenses = recurringExpenseDAO.getUserRecurringExpenses(userId);
+            for (RecurringExpense existingRecurring : existingRecurringExpenses) {
+                Expense existingExpense = expenseDAO.getExpenseById(existingRecurring.getExpenseId());
+                if (existingExpense != null &&
+                        existingRecurring.getFrequency().equals(frequency) &&
+                        existingExpense.getCategory().equals(category) &&
+                        existingExpense.getDescription().equals(description)) {
+                    Toast.makeText(getContext(), "This recurring expense already exists!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            // Calculate total spent in this category
+            float totalSpentInCategory = calculateCategorySpending(userId, category);
+
+            // Use checkBudgetAndNotify to check budget before adding
+            if (!checkBudgetAndNotify(category, amount, totalSpentInCategory)) {
+                return; // Stop if over budget
+            }
+
+            // Nếu không vượt ngân sách, thêm chi tiêu
             Expense expense = new Expense(description, amount, category, startDate.get());
-            expense.setRecurring(true); // Gán recurring = true
+            expense.setRecurring(true);
             expense.setUserId(userId);
             long expenseId = expenseDAO.addExpense(expense);
 
             if (expenseId != -1) {
-                // Tạo RecurringExpense
                 RecurringExpense recurringExpense = new RecurringExpense((int) expenseId, frequency, startDate.get(), endDate.get());
                 recurringExpenseDAO.addRecurringExpense(recurringExpense);
 
-                // Ghi lịch sử giao dịch
+                // Log transaction history
                 TransactionHistory transaction = new TransactionHistory(userId, amount, description, startDate.get(), "Recurring Expense");
                 transactionHistoryDAO.addTransaction(transaction);
 
-                // GỌI xử lý recurring ngay để generate bản ghi tiếp theo (nếu có)
                 processRecurringExpenses();
                 loadExpenses();
                 Toast.makeText(getContext(), "Recurring expense added successfully!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error adding recurring expense!", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
@@ -265,7 +281,6 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
     private void processRecurringExpenses() {
         List<RecurringExpense> recurringExpenses = recurringExpenseDAO.getUserRecurringExpenses(userId);
         long currentTime = System.currentTimeMillis();
-        Calendar cal = Calendar.getInstance();
 
         for (RecurringExpense recurring : recurringExpenses) {
             Expense baseExpense = expenseDAO.getExpenseById(recurring.getExpenseId());
@@ -274,43 +289,128 @@ public class ExpenseManagementFragment extends Fragment implements ExpenseAdapte
             long startDate = recurring.getStartDate();
             long endDate = recurring.getEndDate();
             String frequency = recurring.getFrequency();
+            String category = baseExpense.getCategory();
 
+            Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startDate);
             long nextDate = startDate;
 
+            // Loop through the recurring period
             while (nextDate <= endDate && nextDate <= currentTime) {
-                List<Expense> existing = expenseDAO.getUserExpensesByDate(userId, nextDate);
-                boolean alreadyAdded = existing.stream().anyMatch(e ->
-                        e.getDescription().equals(baseExpense.getDescription()) &&
+                try {
+                    // Check if this expense already exists for the current date
+                    List<Expense> existing = expenseDAO.getUserExpensesByDate(userId, nextDate);
+                    boolean alreadyAdded = false;
+
+                    // Kiểm tra chi tiết hơn với cả ngày
+                    for (Expense e : existing) {
+                        if (e.getDescription().equals(baseExpense.getDescription()) &&
                                 e.getAmount() == baseExpense.getAmount() &&
                                 e.getCategory().equals(baseExpense.getCategory()) &&
-                                e.isRecurring()
-                );
-
-                if (!alreadyAdded) {
-                    Expense newExpense = new Expense(baseExpense.getDescription(), baseExpense.getAmount(),
-                            baseExpense.getCategory(), nextDate);
-                    newExpense.setUserId(userId);
-                    newExpense.setRecurring(true);
-                    long newExpenseId = expenseDAO.addExpense(newExpense);
-
-                    if (newExpenseId != -1) {
-                        TransactionHistory transaction = new TransactionHistory(userId, newExpense.getAmount(),
-                                newExpense.getDescription(), nextDate, "Recurring Expense");
-                        transactionHistoryDAO.addTransaction(transaction);
+                                e.isRecurring() &&
+                                Math.abs(e.getDate() - nextDate) < 86400000) { // Trong phạm vi 24 giờ
+                            alreadyAdded = true;
+                            break;
+                        }
                     }
+
+                    if (!alreadyAdded) {
+                        // Calculate total amount spent for the category in current period
+                        float totalSpentInCategory = calculateCategorySpending(userId, category);
+
+                        // Sử dụng checkBudgetAndNotify để kiểm tra trước khi thêm
+                        // Nhưng không hiển thị Toast vì đang xử lý trong background
+                        Budget budget = budgetDAO.getBudgetByCategory(category, userId);
+                        if (budget != null) {
+                            float budgetAmount = budget.getAmount();
+                            float newTotal = totalSpentInCategory + baseExpense.getAmount();
+                            float ratio = newTotal / budgetAmount;
+
+                            Log.d("RecurringExpense", "Category: " + category +
+                                    ", Current total: " + totalSpentInCategory +
+                                    ", Adding: " + baseExpense.getAmount() +
+                                    ", Budget: " + budgetAmount);
+
+                            if (ratio > 1.0f) {
+                                // Vượt ngân sách, gửi thông báo nhưng KHÔNG thêm chi tiêu
+                                NotificationHelper.sendBudgetExceededNotification(
+                                        getContext(), category, newTotal, budgetAmount);
+                                // Bỏ qua chi tiêu này và đi đến chu kỳ tiếp theo
+                                cal = updateCalendarByFrequency(cal, frequency);
+                                nextDate = cal.getTimeInMillis();
+                                continue; // Bỏ qua chi tiêu này
+                            } else if (ratio >= 0.8f) {
+                                // Gần vượt ngân sách, gửi cảnh báo và vẫn thêm chi tiêu
+                                NotificationHelper.sendBudgetWarningNotification(
+                                        getContext(), category, newTotal, budgetAmount);
+                            }
+                        }
+
+                        // Add new recurring expense
+                        Expense newExpense = new Expense(baseExpense.getDescription(), baseExpense.getAmount(),
+                                category, nextDate);
+                        newExpense.setUserId(userId);
+                        newExpense.setRecurring(true);
+                        long newExpenseId = expenseDAO.addExpense(newExpense);
+
+                        if (newExpenseId != -1) {
+                            // Log the transaction history
+                            TransactionHistory transaction = new TransactionHistory(userId, newExpense.getAmount(),
+                                    newExpense.getDescription(), nextDate, "Recurring Expense");
+                            transactionHistoryDAO.addTransaction(transaction);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("RecurringExpense", "Error processing recurring expense: " + e.getMessage(), e);
                 }
 
-                switch (frequency) {
-                    case "Daily": cal.add(Calendar.DAY_OF_MONTH, 1); break;
-                    case "Weekly": cal.add(Calendar.WEEK_OF_YEAR, 1); break;
-                    case "Monthly": cal.add(Calendar.MONTH, 1); break;
-                    default: continue;
-                }
+                // Update nextDate based on frequency
+                cal = updateCalendarByFrequency(cal, frequency);
                 nextDate = cal.getTimeInMillis();
             }
         }
     }
+
+    // Hàm phụ giúp update calendar dựa trên frequency để code sạch hơn
+    private Calendar updateCalendarByFrequency(Calendar cal, String frequency) {
+        switch (frequency) {
+            case "Daily":
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                break;
+            case "Weekly":
+                cal.add(Calendar.WEEK_OF_YEAR, 1);
+                break;
+            case "Monthly":
+                cal.add(Calendar.MONTH, 1);
+                break;
+        }
+        return cal;
+    }
+
+    // Hàm tính tổng chi tiêu theo danh mục (có thể thêm logic để tính theo chu kỳ)
+    private float calculateCategorySpending(int userId, String category) {
+        // Lấy tháng hiện tại cho ví dụ về chu kỳ tháng
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 1); // Ngày đầu tháng
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        long startOfMonth = cal.getTimeInMillis();
+
+        cal.add(Calendar.MONTH, 1); // Tháng sau
+        long endOfMonth = cal.getTimeInMillis() - 1; // Trừ 1ms để lấy cuối tháng hiện tại
+
+        float total = 0;
+        // Lấy chi tiêu theo khoảng thời gian
+        List<Expense> expenses = expenseDAO.getExpensesByUserAndDateRange(userId, startOfMonth, endOfMonth);
+        for (Expense expense : expenses) {
+            if (expense.getCategory().equals(category)) {
+                total += expense.getAmount();
+            }
+        }
+        return total;
+    }
+
     private void loadExpenses() {
         expenseList = expenseDAO.getUserExpenses(userId);
         expenseAdapter = new ExpenseAdapter(expenseList, this);
